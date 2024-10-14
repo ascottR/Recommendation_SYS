@@ -1,0 +1,48 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Flask instance folder
+instance/
+
+# Local configuration
+*.env
+*.local
+
+# Database files
+*.sqlite3
+*.db
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*.cover
+
+# Pytest cache
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE configurations
+.vscode/
+.idea/
+
+# Miscellaneous
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db-journal
+
+# Operating system files
+.DS_Store
+Thumbs.db
