@@ -82,6 +82,44 @@ def find_similar_products_by_title(product_title, X, item_mapper, item_inv_mappe
 
     return neighbour_ids
 
+def find_similar_products_by_id(product_id, X, item_mapper, item_inv_mapper, k, metric='cosine'):
+    """
+    Finds k-nearest neighbours for a given product id.
+
+    Args:
+        product_id: id of the product of interest
+        X: user-item utility matrix (sparse matrix)
+        k: number of similar products to retrieve
+        metric: distance metric for kNN calculations
+
+    Output: returns list of k similar product IDs
+    """
+    # Transpose the user-item matrix so products are the rows
+    X = X.T
+    neighbour_ids = []
+
+    # Get the index of the product
+    product_ind = item_mapper[product_id]
+    product_vec = X[product_ind]
+
+    # Reshape the product vector to be compatible with kneighbors
+    if isinstance(product_vec, np.ndarray):
+        product_vec = product_vec.reshape(1, -1)
+
+    # Use k+1 since kNN output includes the product ID of interest
+    kNN = NearestNeighbors(n_neighbors=k + 1, algorithm="brute", metric=metric)
+    kNN.fit(X)
+
+    # Find the nearest neighbours
+    neighbour = kNN.kneighbors(product_vec, return_distance=False)
+
+    # Collect similar product IDs, skipping the first one (the product itself)
+    for i in range(0, k):
+        n = neighbour.item(i)
+        neighbour_ids.append(item_inv_mapper[n])
+
+    return neighbour_ids
+
 def content_based_recommendations(metadf, item_title, top_n=10, chunk_size=1000):
     # Check if the item title exists in the metadata
     if item_title not in metadf['title'].values:
@@ -124,41 +162,3 @@ def content_based_recommendations(metadf, item_title, top_n=10, chunk_size=1000)
     recommended_items_details = metadf.iloc[recommended_item_indices][['title', 'average_rating', 'rating_number', 'images', 'price', 'store']]
 
     return recommended_items_details
-
-def find_similar_products_by_id(product_id, X, item_mapper, item_inv_mapper, k, metric='cosine'):
-    """
-    Finds k-nearest neighbours for a given product id.
-
-    Args:
-        product_id: id of the product of interest
-        X: user-item utility matrix (sparse matrix)
-        k: number of similar products to retrieve
-        metric: distance metric for kNN calculations
-
-    Output: returns list of k similar product IDs
-    """
-    # Transpose the user-item matrix so products are the rows
-    X = X.T
-    neighbour_ids = []
-
-    # Get the index of the product
-    product_ind = item_mapper[product_id]
-    product_vec = X[product_ind]
-
-    # Reshape the product vector to be compatible with kneighbors
-    if isinstance(product_vec, np.ndarray):
-        product_vec = product_vec.reshape(1, -1)
-
-    # Use k+1 since kNN output includes the product ID of interest
-    kNN = NearestNeighbors(n_neighbors=k + 1, algorithm="brute", metric=metric)
-    kNN.fit(X)
-
-    # Find the nearest neighbours
-    neighbour = kNN.kneighbors(product_vec, return_distance=False)
-
-    # Collect similar product IDs, skipping the first one (the product itself)
-    for i in range(0, k):
-        n = neighbour.item(i)
-        neighbour_ids.append(item_inv_mapper[n])
-
-    return neighbour_ids

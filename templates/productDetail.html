@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ product['title'] }}</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-6">
+          <img
+            src="{{ product['large_image_url'] }}"
+            class="img-fluid"
+            alt="{{ product['title'] }}"
+          />
+        </div>
+        <div class="col-md-6">
+          <h2>{{ product['title'] }}</h2>
+          <p><strong>Brand:</strong> {{ product['store'] }}</p>
+          <p><strong>Review Count:</strong> {{ product['rating_number'] }}</p>
+          <p><strong>Rating:</strong> {{ product['average_rating'] }}</p>
+          <p><strong>Price:</strong> ${{ product['price'] }}</p>
+          <a href="#" class="btn btn-primary">Add to Cart</a>
+        </div>
+      </div>
+      {% if similar_products %}
+      <div class="row">
+        {% for sproduct in similar_products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+          <div class="card">
+            <img
+              src="{{ sproduct['large_image_url'] }}"
+              class="card-img-top"
+              alt="{{ sproduct['title'] }}"
+              style="height: 200px"
+            />
+            <div class="card-body">
+              <h5 class="card-title">{{ sproduct['title'] }}</h5>
+              <p class="card-text">Brand: {{ sproduct['store'] }}</p>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#"
+              >
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
