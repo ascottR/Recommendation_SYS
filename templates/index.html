@@ -195,223 +195,99 @@
 
     <div id="trendingProducts" class="row mt-4">
       {% for product in popular_products %}
-      <div class="col-lg-3 col-md-4 col-sm-6 mb-4 product-card">
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
         <div class="card shadow">
-          <img src="{{ product['large_image_url'] }}" class="card-img-top" alt="{{ product['Name'] }}"
+          <img src="{{ product['large_image_url'] }}" class="card-img-top" alt="{{ product['title'] }}"
             style="height: 200px;">
           <div class="card-body">
             <h5 class="card-title">{{ product['title'][:12] }}</h5>
             <p class="card-text">Brand: {{ product['store'] }}</p>
-            <button type="button" class="btn btn-primary" data-toggle="modal"
-              data-target="#productModal{{ loop.index }}">Buy Now</button>
-          </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="productModal{{ loop.index }}" tabindex="-1" role="dialog"
-          aria-labelledby="productModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="productModalLabel">{{ product['title'] }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-4">
-                    <img src="{{ product['large_image_url'] }}" class="img-fluid" alt="{{ product['title'] }}"
-                      style="height: 200px;">
-                  </div>
-                  <div class="col-md-8">
-                    <p><strong>Brand:</strong> {{ product['store'] }}</p>
-                    <p><strong>Review Count:</strong> {{ product['rating_number'] }}</p>
-                    <p><strong>Features:</strong> {{ product['features'] }}</p>
-                    <p><strong>Price:</strong> {{ product['price'] }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Add to Cart</button>
-              </div>
-            </div>
+            <a href="/product/{{ product['parent_asin'] }}" class="btn btn-primary">Buy Now</a>
           </div>
         </div>
       </div>
       {% endfor %}
-      <h2 class="text-center mb-4">Trending Products</h2>
-      <div class="row mt-4">
-        {% for product in popular_products %}
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-          <div class="card shadow">
-            <img src="{{ product['large_image_url'] }}" class="card-img-top" alt="{{ product['Name'] }}"
-              style="height: 200px" />
-            <div class="card-body">
-              <h5 class="card-title">{{ product['title'][:12] }}</h5>
-              <p class="card-text">Brand: {{ product['store'] }}</p>
-
-              <a href="/product/{{ product['parent_asin'] }}" class="btn btn-primary">Buy Now</a>
-            </div>
-          </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="productModal{{ loop.index }}" tabindex="-1" role="dialog"
-          aria-labelledby="productModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="productModalLabel">
-                  {{ product['title'] }}
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-md-4">
-                    <img src="{{ product['large_image_url'] }}" class="img-fluid" alt="{{ product['title'] }}"
-                      style="height: 200px" />
-                  </div>
-                  <div class="col-md-8">
-                    <p><strong>Store:</strong> {{ product['store'] }}</p>
-                    <p>
-                      <strong>Review Count:</strong> {{ product['parent_asin']
-                      }}
-                    </p>
-                    <p>
-                      <strong>Rating:</strong> {{ product['average_rating'] }}
-                    </p>
-                    <p><strong>Price:</strong> ${{ product['price'] }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                  Close
-                </button>
-                <button type="button" class="btn btn-primary">
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
     </div>
+  </div>
 
-    <script>
-      $(document).ready(function () {
-        $('#categorySelect').change(function () {
-          const selectedCategory = $(this).val();
+  <script>
+    $(document).ready(function () {
+      $('#categorySelect').change(function () {
+        const selectedCategory = $(this).val();
 
-          $.ajax({
-            url: '/trending',
-            data: { category: selectedCategory },
-            success: function (products) {
-              $('#trendingProducts').empty(); // Clear existing products
-              let title = selectedCategory ? `Trending Products in ${selectedCategory}` : 'Trending Products';
-              $('h2').text(title); // Update the title
+        $.ajax({
+          url: '/trending',
+          data: { category: selectedCategory },
+          success: function (products) {
+            $('#trendingProducts').empty(); // Clear existing products
+            let title = selectedCategory
+              ? `Trending Products in ${selectedCategory}`
+              : 'Trending Products';
+            $('h2').text(title); // Update the title
 
-              if (products.length === 0) {
-                $('#trendingProducts').append('<div class="col-12"><h5>No products found in this category.</h5></div>');
-              } else {
-                products.forEach((product, index) => {
-                  const productCard = `
-                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                                <div class="card shadow">
-                                    <img src="${product.large_image_url}" class="card-img-top" alt="${product.title}" style="height: 200px;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${product.title.slice(0, 12)}</h5>
-                                        <p class="card-text">Brand: ${product.store}</p>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal${index}">
-                                            Buy Now
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="productModal${index}" tabindex="-1" role="dialog" aria-labelledby="productModalLabel${index}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="productModalLabel${index}">${product.title}</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <img src="${product.large_image_url}" class="img-fluid" alt="${product.title}" style="height: 200px;">
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <p><strong>Brand:</strong> ${product.store}</p>
-                                                    <p><strong>Review Count:</strong> ${product.rating_number}</p>
-                                                    <p><strong>Rating:</strong> ${product.average_rating}</p>
-                                                    <p><strong>Features:</strong> ${product.features}</p>
-                                                    <p><strong>Price:</strong> ${product.price}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Add to Cart</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                  $('#trendingProducts').append(productCard);
-                });
-              }
+            if (products.length === 0) {
+              $('#trendingProducts').append('<div class="col-12"><h5>No products found in this category.</h5></div>');
+            } else {
+              products.forEach((product) => {
+                const productCard = `
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                  <div class="card shadow">
+                    <img src="${product.large_image_url}" class="card-img-top" 
+                      alt="${product.title}" style="height: 200px;">
+                    <div class="card-body">
+                      <h5 class="card-title">${product.title.slice(0, 12)}</h5>
+                      <p class="card-text">Brand: ${product.store}</p>
+                      <a href="/product/${product.parent_asin}" 
+                         class="btn btn-primary">Buy Now</a>
+                    </div>
+                  </div>
+                </div>`;
+                $('#trendingProducts').append(productCard);
+              });
             }
-          });
+          }
         });
       });
-    </script>
+    });
+  </script>
 
-    <!-- Footer -->
-    <footer class="footer text-white">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3 col-sm-6">
-            <h5>About Us</h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              pretium risus quis urna dapibus, ut ultricies ex pulvinar.
-            </p>
-          </div>
-          <div class="col-md-3 col-sm-6">
-            <h5>Contact</h5>
-            <p><i class="fas fa-phone"></i> +1 234 567 890</p>
-            <p><i class="fas fa-envelope"></i> email@example.com</p>
-          </div>
-          <div class="col-md-3 col-sm-6">
-            <h5>Follow Us</h5>
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-          </div>
-          <div class="col-md-3 col-sm-6">
-            <h5>Newsletter</h5>
-            <form>
-              <input type="email" class="form-control mb-2" placeholder="Enter your email" />
-              <button type="submit" class="btn btn-primary btn-block">
-                Subscribe
-              </button>
-            </form>
-          </div>
+  <!-- Footer -->
+  <footer class="footer text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <h5>About Us</h5>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
+            pretium risus quis urna dapibus, ut ultricies ex pulvinar.
+          </p>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <h5>Contact</h5>
+          <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+          <p><i class="fas fa-envelope"></i> email@example.com</p>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <h5>Follow Us</h5>
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <h5>Newsletter</h5>
+          <form>
+            <input type="email" class="form-control mb-2" placeholder="Enter your email" />
+            <button type="submit" class="btn btn-primary btn-block">
+              Subscribe
+            </button>
+          </form>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
 
-    <!-- External Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- External Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
