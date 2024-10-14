@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import pandas as pd
 import ast
-from helper import most_popular_products, create_X_custom, find_similar_products_by_title, content_based_recommendations
+from helper import most_popular_products, create_X_custom, find_similar_products_by_title, content_based_recommendations,get_product_by_asin
 from sklearn.neighbors import NearestNeighbors
 from scipy.sparse import csr_matrix
 
@@ -61,6 +61,31 @@ def recommend():
         return render_template('main.html', similar_products=None, message=message, product_titles=product_titles)
     else:
         return render_template('main.html', similar_products=recommended_products.to_dict(orient='records'), message=None, product_titles=product_titles)
+
+@app.route('/product/<parent_asin>')
+def product_detail(parent_asin):
+    # Fetch product details using parent_asin from your data source
+    product = get_product_by_asin(parent_asin, metadf)
+
+    # Extract 'large' images for each product
+    if product:
+        # Directly extract the large image URL for this single product
+        product['large_image_url'] = extract_large_image(product['images'])
+
+    product_title = product['title']  # Get the product title 
+    k = 3  # Default to 5 recommendations if not specified
+
+    similar_product_ids = find_similar_products_by_title(product_title, X, item_mapper, item_inv_mapper, 
+                                                          dict(zip(metadf['parent_asin'], metadf['title'])), 
+                                                          k)
+
+    # Get details of similar products from the metadata DataFrame
+    similar_products = metadf[metadf['parent_asin'].isin(similar_product_ids)]
+
+    # Extract 'large' images for each similar product
+    similar_products['large_image_url'] = similar_products['images'].apply(extract_large_image)
+
+    return render_template('productDetail.html', product=product , similar_products=similar_products.to_dict(orient='records'))
 
 if __name__ == '__main__':
     app.run(debug=True)
