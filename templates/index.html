@@ -4,185 +4,240 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ecommerce Recommendation System</title>
+  <title>Instruments Hub - Your Music, Your Way</title>
+
+  <!-- External CSS & JS -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
+    /* Global Styles */
     body {
-      background-color: #f8f9fa;
-      font-family: "Arial", sans-serif;
+      background: linear-gradient(to bottom, #fff, #000);
+      font-family: 'Poppins', sans-serif;
+      color: #343a40;
+      overflow-x: hidden;
+      animation: fadeIn 1s;
+      /* Fade-in effect */
+      scroll-behavior: smooth;
+      /* Smooth scrolling */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     .navbar {
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: background 0.3s;
+    }
+
+    .navbar.scrolled {
+      background: rgba(0, 0, 0, 1);
+      /* Change navbar background on scroll */
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      color: #fff;
+      font-size: 1.7rem;
+      transition: color 0.3s;
+    }
+
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      transition: color 0.3s;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #ffc107 !important;
+    }
+
+    .hero-section {
+      background: url('../static/img/hector-bermudez-0WSt2Wpmz8E-unsplash.jpg') no-repeat center center/cover;
+      height: 85vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+    }
+
+    .hero-section h1 {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+      animation: slideInDown 3s;
+      /* Slide in effect */
+    }
+
+    @keyframes slideInDown {
+      from {
+        transform: translateY(-30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .hero-section p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+      animation: fadeInUp 3s;
+      /* Fade-in effect */
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .hero-section .btn {
+      font-size: 1.2rem;
+      padding: 12px 35px;
+      border-radius: 30px;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+
+    .hero-section .btn:hover {
+      transform: scale(1.05);
+      /* Scale up on hover */
+      background-color: #4a44c2;
+    }
+
+    /* Parallax Effect */
+    .parallax {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      background: url('../static/img/hector-bermudez-0WSt2Wpmz8E-unsplash.jpg') no-repeat center center/cover;
+      background-attachment: fixed;
+      /* Parallax effect */
+      background-size: cover;
+      filter: brightness(0.7);
+      /* Darken the background for readability */
     }
 
     .container {
-      margin-top: 50px;
+      margin-top: 60px;
     }
 
-    .video-background {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-    }
-
-    .nav-link:hover {
-      color: orange !important;
-    }
-
-    .nav-link.btn {
-      border-radius: 5px;
-    }
-
-    .modal-content {
-      background-color: #fff;
-      color: #000;
-    }
-
-    .modal-content.dark {
-      background-color: #000;
+    h2 {
+      font-weight: 600;
+      margin-bottom: 30px;
       color: #fff;
-    }
-
-    .footer {
-      padding: 40px 0;
-      background-color: #343a40;
-    }
-
-    .footer h5 {
-      font-weight: bold;
-    }
-
-    .footer a {
-      color: #ffffff;
-      margin-right: 15px;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
+      text-align: center;
     }
 
     .card {
       border: none;
-      border-radius: 10px;
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
       overflow: hidden;
-      transition: transform 0.2s;
     }
 
     .card:hover {
-      transform: scale(1.05);
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .card img {
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px 15px 0 0;
     }
 
     .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
+      background-color: #6c63ff;
+      border-color: #6c63ff;
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .btn-primary:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
+      background-color: #4a44c2;
+      border-color: #4a44c2;
+      transform: scale(1.05);
+      /* Scale up on hover */
+    }
+
+    .footer {
+      background-color: #212529;
+      padding: 40px 0;
+      color: #fff;
+    }
+
+    .footer a {
+      color: #ffc107;
+      text-decoration: none;
+      margin-right: 15px;
+      font-size: 1.3rem;
+      transition: color 0.3s;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+      color: #fff;
+      /* Change color on hover */
+    }
+
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2.5rem;
+      }
     }
   </style>
 </head>
 
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand mx-auto" href="#">Musical Instruments Recommendation System</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <a class="navbar-brand" href="#">Instruments Hub</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-outline-primary mr-2" href="#" data-toggle="modal" data-target="#signupModal">Sign
-            Up</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-primary" href="#" data-toggle="modal" data-target="#signinModal">Sign In</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-outline-light mr-2" href="#" data-toggle="modal"
+            data-target="#signupModal">Sign Up</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-warning text-dark" href="#" data-toggle="modal"
+            data-target="#signinModal">Sign In</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Go To Main Page Button -->
-  <div class="text-center mt-5">
-    <a href="main" class="btn btn-primary btn-lg">Go To Main Page</a>
+  <!-- Hero Section -->
+  <div class="hero-section parallax">
+    <h1>Explore the World of Musical Instruments</h1>
+    <p>Find instruments that resonate with your soul.</p>
+    <a href="main" class="btn btn-primary btn-lg">Explore Now</a>
   </div>
 
-  <!-- Sign Up Modal -->
-  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="/signup" method="post">
-            <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
-              <input type="text" class="form-control" id="username" name="username" required />
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" name="email" required />
-            </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="password" name="password" required />
-            </div>
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sign In Modal -->
-  <div class="modal fade" id="signinModal" tabindex="-1" aria-labelledby="signinModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="signinModalLabel">Sign In</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="/signin" method="post">
-            <div class="mb-3">
-              <label for="signinUsername" class="form-label">Username</label>
-              <input type="text" class="form-control" id="signinUsername" name="signinUsername" required />
-            </div>
-            <div class="mb-3">
-              <label for="signinPassword" class="form-label">Password</label>
-              <input type="password" class="form-control" id="signinPassword" name="signinPassword" required />
-            </div>
-            <button type="submit" class="btn btn-primary">Sign In</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Trending Recommendations -->
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">Trending Products</h2>
-
+  <!-- Trending Products -->
+  <div class="container">
+    <h2>Trending Products</h2>
     <div class="form-group">
       <label for="categorySelect">Select Category:</label>
       <select id="categorySelect" class="form-control">
@@ -196,13 +251,12 @@
     <div id="trendingProducts" class="row mt-4">
       {% for product in popular_products %}
       <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-        <div class="card shadow">
-          <img src="{{ product['large_image_url'] }}" class="card-img-top" alt="{{ product['title'] }}"
-            style="height: 200px;">
-          <div class="card-body">
+        <div class="card">
+          <img src="{{ product['large_image_url'] }}" class="card-img-top" alt="{{ product['title'] }}">
+          <div class="card-body text-center">
             <h5 class="card-title">{{ product['title'][:12] }}</h5>
             <p class="card-text">Brand: {{ product['store'] }}</p>
-            <a href="/product/{{ product['parent_asin'] }}" class="btn btn-primary">Buy Now</a>
+            <a href="/product/{{ product['parent_asin'] }}" class="btn btn-primary btn-block">Buy Now</a>
           </div>
         </div>
       </div>
@@ -210,38 +264,55 @@
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <p>&copy; 2024 Instruments Hub. All Rights Reserved.</p>
+      <div>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- External Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     $(document).ready(function () {
+      // Change navbar background on scroll
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > 50) {
+          $('.navbar').addClass('scrolled');
+        } else {
+          $('.navbar').removeClass('scrolled');
+        }
+      });
+
       $('#categorySelect').change(function () {
         const selectedCategory = $(this).val();
-
         $.ajax({
           url: '/trending',
           data: { category: selectedCategory },
           success: function (products) {
-            $('#trendingProducts').empty(); // Clear existing products
-            let title = selectedCategory
-              ? `Trending Products in ${selectedCategory}`
-              : 'Trending Products';
-            $('h2').text(title); // Update the title
-
+            $('#trendingProducts').empty();
+            const title = selectedCategory ? `Trending Products in ${selectedCategory}` : 'Trending Products';
+            $('h2').text(title);
             if (products.length === 0) {
-              $('#trendingProducts').append('<div class="col-12"><h5>No products found in this category.</h5></div>');
+              $('#trendingProducts').append('<div class="col-12"><h5>No products found.</h5></div>');
             } else {
               products.forEach((product) => {
                 const productCard = `
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                  <div class="card shadow">
-                    <img src="${product.large_image_url}" class="card-img-top" 
-                      alt="${product.title}" style="height: 200px;">
-                    <div class="card-body">
-                      <h5 class="card-title">${product.title.slice(0, 12)}</h5>
-                      <p class="card-text">Brand: ${product.store}</p>
-                      <a href="/product/${product.parent_asin}" 
-                         class="btn btn-primary">Buy Now</a>
+                  <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card">
+                      <img src="${product.large_image_url}" class="card-img-top" alt="${product.title}">
+                      <div class="card-body text-center">
+                        <h5 class="card-title">${product.title.slice(0, 12)}</h5>
+                        <p class="card-text">Brand: ${product.store}</p>
+                        <a href="/product/${product.parent_asin}" class="btn btn-primary btn-block">Buy Now</a>
+                      </div>
                     </div>
-                  </div>
-                </div>`;
+                  </div>`;
                 $('#trendingProducts').append(productCard);
               });
             }
@@ -250,44 +321,6 @@
       });
     });
   </script>
-
-  <!-- Footer -->
-  <footer class="footer text-white">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 col-sm-6">
-          <h5>About Us</h5>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-            pretium risus quis urna dapibus, ut ultricies ex pulvinar.
-          </p>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <h5>Contact</h5>
-          <p><i class="fas fa-phone"></i> +1 234 567 890</p>
-          <p><i class="fas fa-envelope"></i> email@example.com</p>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <h5>Follow Us</h5>
-          <a href="#"><i class="fab fa-facebook"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <h5>Newsletter</h5>
-          <form>
-            <input type="email" class="form-control mb-2" placeholder="Enter your email" />
-            <button type="submit" class="btn btn-primary btn-block">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- External Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
