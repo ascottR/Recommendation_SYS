@@ -17,11 +17,11 @@ def most_popular_products(metadf):
     metadf['bayesian_average'] = (metadf['rating_number'] * metadf['average_rating'] + C * overall_average) / (metadf['rating_number'] + C)
 
     # Rank items based on the Bayesian average
-    ranked_items = metadf.nlargest(10, 'bayesian_average')
+    ranked_items = metadf.nlargest(12, 'bayesian_average')
     
-    return ranked_items.sort_values('bayesian_average', ascending=False).head(10)
+    return ranked_items.sort_values('bayesian_average', ascending=False).head(12)
 
-def most_popular_products_by_category(metadf, category, top_n=10):
+def most_popular_products_by_category(metadf, category, top_n=12):
     
     # Filter the dataset by the selected category
     filtered_df = metadf[metadf['categories'].str.contains(category, case=False, na=False)]

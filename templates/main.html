@@ -7,128 +7,26 @@
     <title>main page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        /* Ensure the body takes the full height of the viewport */
-        html,
-        body {
-            height: 100%;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            background-color: #f4f7f9;
-        }
-
-        /* Make the container take up the remaining space, pushing the footer down */
-        .container {
-            flex: 1;
-            margin-top: 50px;
-        }
-
-        .navbar {
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-link:hover {
-            color: #ff9800 !important;
-        }
-
-        .nav-link.btn {
-            border-radius: 5px;
-        }
-
-        .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-            transition: transform 0.3s ease;
-        }
-
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .modal-content {
-            background-color: #fff;
-            color: #000;
-        }
-
-        .modal-content.dark {
-            background-color: #000;
-            color: #fff;
-        }
-
-        /* Footer styles */
-        .footer {
-            background-color: #343a40;
-            color: white;
-            padding: 30px 0;
-            margin-top: auto;
-            /* Ensures the footer stays at the bottom */
-        }
-
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        .footer h5 {
-            font-weight: bold;
-        }
-
-        .footer p,
-        .footer ul {
-            font-size: 14px;
-        }
-
-        /* Ensure the footer is always at the bottom */
-        .container-flex {
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/css/styles.css">
 </head>
 
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand mx-auto" href="#">Musical Instruments Recommendation System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <a class="navbar-brand" href="#">Instruments Hub</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="index"><i class="fas fa-home"></i> Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-primary mr-2" href="#" data-toggle="modal"
-                        data-target="#signupModal">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-primary" href="#" data-toggle="modal" data-target="#signinModal">Sign
-                        In</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i>
+                        Settings</a></li>
+                <li class="nav-item"><a class="nav-link btn btn-outline-light mr-2" href="#" data-toggle="modal"
+                        data-target="#signupModal">Sign Up</a></li>
+                <li class="nav-item"><a class="nav-link btn btn-warning text-dark" href="#" data-toggle="modal"
+                        data-target="#signinModal">Sign In</a></li>
             </ul>
         </div>
     </nav>
@@ -221,47 +119,13 @@
     {% endif %}
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer text-center">
         <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>About Us</h5>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pretium risus quis urna maximus,
-                        eget vestibulum risus vestibulum.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Services</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Support</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Contact Us</h5>
-                    <address>
-                        <strong>Company Name</strong><br>
-                        123 Street, City<br>
-                        Country<br>
-                        <i class="fas fa-phone"></i> Phone: +1234567890<br>
-                        <i class="fas fa-envelope"></i> Email: info@example.com
-                    </address>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-md-12 text-center">
-                    <hr class="bg-light">
-                    <p>© 2024 Ecommerce Recommendation System. All Rights Reserved.</p>
-                </div>
+            <p>&copy; 2024 Instruments Hub. All Rights Reserved.</p>
+            <div>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </footer>

@@ -1,60 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>{{ product['title'] }}</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-  </head>
-  <body>
-    <div class="container mt-5">
-      <div class="row">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ product['title'] }}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/styles.css">
+  <style>
+    .product-card {
+      background-color: #ffffff;
+      /* White background for the card */
+      border-radius: 8px;
+      /* Rounded corners */
+      overflow: hidden;
+      /* Prevents overflow */
+      margin: 100px 20px;
+      /* Space between cards */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      /* Subtle shadow for depth */
+    }
+
+    .product-card img {
+      height: auto;
+      /* Responsive height */
+    }
+
+    .product-details {
+      padding: 20px;
+      /* Inner padding for product details */
+    }
+
+    .product-details h2 {
+      font-size: 24px;
+      /* Title font size */
+      font-weight: 600;
+      /* Title font weight */
+      margin-bottom: 15px;
+      /* Space below title */
+      color: #555;
+    }
+
+    .product-details p {
+      margin: 10px 0;
+      /* Space between paragraphs */
+      color: #555;
+      /* Darker gray color for text */
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      /* Bootstrap primary color */
+      border: none;
+      /* Remove border */
+      transition: background-color 0.3s;
+      /* Smooth background color transition */
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      /* Darker shade for hover effect */
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <a class="navbar-brand" href="#">Instruments Hub</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-outline-light mr-2" href="#" data-toggle="modal"
+            data-target="#signupModal">Sign Up</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-warning text-dark" href="#" data-toggle="modal"
+            data-target="#signinModal">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Product Details Section -->
+  <div class="container my-5">
+    <div class="product-card shadow-sm">
+      <div class="row no-gutters">
         <div class="col-md-6">
-          <img
-            src="{{ product['large_image_url'] }}"
-            class="img-fluid"
-            alt="{{ product['title'] }}"
-          />
+          <img src="{{ product['large_image_url'] }}" class="img-fluid rounded-start" alt="{{ product['title'] }}" />
         </div>
-        <div class="col-md-6">
-          <h2>{{ product['title'] }}</h2>
+        <div class="col-md-6 product-details">
+          <h2>{{ product['title'][:25] }}</h2>
           <p><strong>Brand:</strong> {{ product['store'] }}</p>
           <p><strong>Review Count:</strong> {{ product['rating_number'] }}</p>
           <p><strong>Rating:</strong> {{ product['average_rating'] }}</p>
           <p><strong>Price:</strong> ${{ product['price'] }}</p>
-          <a href="#" class="btn btn-primary">Add to Cart</a>
+          <button class="btn btn-primary mt-3"><i class="fas fa-cart-plus"></i> Add to Cart</button>
         </div>
       </div>
-      {% if similar_products %}
-      <div class="row">
-        {% for sproduct in similar_products %}
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-          <div class="card">
-            <img
-              src="{{ sproduct['large_image_url'] }}"
-              class="card-img-top"
-              alt="{{ sproduct['title'] }}"
-              style="height: 200px"
-            />
-            <div class="card-body">
-              <h5 class="card-title">{{ sproduct['title'] }}</h5>
-              <p class="card-text">Brand: {{ sproduct['store'] }}</p>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-toggle="modal"
-                data-target="#"
-              >
-                Buy Now
-              </button>
-            </div>
+    </div>
+  </div>
+
+  <!-- Recommended Products Section -->
+  {% if similar_products %}
+  <div class="container recommended-products">
+    <h3>Customers Also Viewed</h3>
+    <div class="row mt-4">
+      {% for sproduct in similar_products %}
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="card">
+          <img src="{{ sproduct['large_image_url'] }}" class="card-img-top" alt="{{ sproduct['title'] }}" />
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ sproduct['title'][:12] }}</h5>
+            <p class="card-text">Brand: {{ sproduct['store'] }}</p>
+            <a href="/product/{{ sproduct['parent_asin'] }}">
+              <button type="button" class="btn btn-primary">Buy Now</button>
+            </a>
           </div>
         </div>
-        {% endfor %}
       </div>
-      {% endif %}
+      {% endfor %}
     </div>
-  </body>
+  </div>
+  {% endif %}
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <p>&copy; 2024 Instruments Hub. All Rights Reserved.</p>
+      <div>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
 </html>

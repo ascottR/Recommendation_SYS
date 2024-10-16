@@ -58,7 +58,6 @@ def trending_by_category():
     # Extract 'large' images for each product
     trending_products['large_image_url'] = trending_products['images'].apply(extract_large_image)
     products_list = trending_products.to_dict(orient='records')
-    print("Products List:", products_list)
     return jsonify(products_list)
     
 @app.route('/main')
@@ -105,7 +104,7 @@ def product_detail(parent_asin):
         product['large_image_url'] = extract_large_image(product['images'])
 
     product_title = product['title']  # Get the product title 
-    k = 3  # Default to 5 recommendations if not specified
+    k = 8  # Default to 5 recommendations if not specified
 
     similar_product_ids = find_similar_products_by_title(product_title, X, item_mapper, item_inv_mapper, 
                                                           dict(zip(metadf['parent_asin'], metadf['title'])), 
