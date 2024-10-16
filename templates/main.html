@@ -75,8 +75,7 @@
                     <div class="card-body text-center">
                         <h5 class="card-title">{{ product['title'][:12] }}</h5>
                         <p class="card-text">Brand: {{ product['store'] }}</p>
-                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#productModal{{ loop.index }}">Buy Now</button>
+                        <a href="/product/{{ product['parent_asin'] }}" class="btn btn-primary btn-block">Buy Now</a>
                     </div>
                 </div>
             </div>

@@ -103,6 +103,12 @@ def product_detail(parent_asin):
         # Directly extract the large image URL for this single product
         product['large_image_url'] = extract_large_image(product['images'])
 
+    # Handle product features: Convert string representation to a list
+    try:
+        product['features'] = ast.literal_eval(product.get('features', '[]'))
+    except (ValueError, SyntaxError):
+        product['features'] = []  # Fallback to empty list if parsing fails
+
     product_title = product['title']  # Get the product title 
     k = 8  # Default to 5 recommendations if not specified
 
