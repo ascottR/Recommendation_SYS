@@ -32,27 +32,17 @@
     </nav>
 
     <!-- Search Bar -->
-    <div class="container">
-        <form action="/recommendations" method="post" class="form-inline justify-content-center">
-            <!-- Dropdown for selecting product title -->
-            <select class="form-control mr-2" name="prod" required style="flex: 1; max-width: 400px;">
-                <option value="" disabled selected>Select a product...</option>
-                {% for title in product_titles %}
-                <option value="{{ title }}">{{ title }}</option>
-                {% endfor %}
-            </select>
-
-            <input type="number" class="form-control mr-2" name="nbr" placeholder="Number of products..." required
-                min="1" style="width: 150px;">
-
-            <!-- Dropdown for selecting filtering method -->
-            <select class="form-control mr-2" name="filter_type" required>
-                <option value="" disabled selected>According to</option>
-                <option value="content">You</option>
-                <option value="collaborative">Friends</option>
-            </select>
-
-            <button class="btn btn-primary">Search</button>
+    <div class="container mt-5 pt-5">
+        <form class="form-inline justify-content-center" onsubmit="return false;">
+            <div class="input-group" style="max-width: 600px; width: 100% ; padding:30px">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search for products..."
+                    autocomplete="off" oninput="searchProducts(this.value)">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button"
+                        onclick="searchProducts(searchInput.value)">Search</button>
+                </div>
+            </div>
+            <div id="suggestionBox" class="suggestion-box mt-2"></div>
         </form>
     </div>
 
@@ -64,58 +54,56 @@
     {% endif %}
 
     <!-- Recommended Products -->
-    {% if similar_products %}
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Recommended Products</h2>
-        <div class="row">
-            {% for product in similar_products %}
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card">
-                    <img src="{{ product['large_image_url'] }}" class="card-img-top" alt="{{ product['title'] }}">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ product['title'][:12] }}</h5>
-                        <p class="card-text">Brand: {{ product['store'] }}</p>
-                        <a href="/product/{{ product['parent_asin'] }}" class="btn btn-primary btn-block">Buy Now</a>
-                    </div>
-                </div>
-            </div>
+    <div id="recommendationSection" class="container mt-5" style="display: none;">
+        <h2 class="text-center mb-4" id="recommendationTitle">Recommended Products</h2>
+        <div class="row" id="productList"></div>
+    </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="productModal{{ loop.index }}" tabindex="-1" role="dialog"
-                aria-labelledby="productModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="productModalLabel">{{ product['title'] }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <img src="{{ product['large_image_url'] }}" class="img-fluid"
-                                        alt="{{ product['title'] }}" style="height: 200px;">
-                                </div>
-                                <div class="col-md-8">
-                                    <p><strong>Brand:</strong> {{ product['store'] }}</p>
-                                    <p><strong>Review Count:</strong> {{ product['rating_number'] }}</p>
-                                    <p><strong>Features:</strong> {{ product['features'] }}</p>
-                                    <p><strong>Price:</strong> {{ product['price'] }}</p>
+    <script>
+        function searchProducts(query) {
+            if (query.length < 3) {
+                document.getElementById('suggestionBox').innerHTML = ''; // Clear if query is too short
+                document.getElementById('recommendationSection').style.display = 'none';
+                return;
+            }
+
+            fetch(`/live_search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const suggestionBox = document.getElementById('suggestionBox');
+                    const productList = document.getElementById('productList');
+                    const recommendationTitle = document.getElementById('recommendationTitle');
+
+                    productList.innerHTML = ''; // Clear previous results
+
+                    if (data.products.length > 0) {
+                        // Update the title with the searched product name
+                        recommendationTitle.textContent = `Recommended Products for "${query}"`;
+
+                        data.products.forEach(product => {
+                            const productHTML = `
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card">
+                                <img src="${product.large_image_url}" class="card-img-top" alt="${product.title}">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">${product.title.slice(0, 12)}</h5>
+                                    <p class="card-text">Brand: ${product.store}</p>
+                                    <a href="/product/${product.parent_asin}" class="btn btn-primary btn-block">Buy Now</a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+                        </div>`;
+                            productList.insertAdjacentHTML('beforeend', productHTML);
+                        });
+
+                        document.getElementById('recommendationSection').style.display = 'block';
+                    } else {
+                        suggestionBox.innerHTML = '<p class="text-center">No products found.</p>';
+                        document.getElementById('recommendationSection').style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching products:', error));
+        }
+    </script>
 
     <!-- Footer -->
     <footer class="footer text-center">

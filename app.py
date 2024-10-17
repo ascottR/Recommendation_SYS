@@ -124,5 +124,25 @@ def product_detail(parent_asin):
 
     return render_template('productDetail.html', product=product , similar_products=similar_products.to_dict(orient='records'))
 
+@app.route('/live_search', methods=['GET'])
+def live_search():
+    query = request.args.get('query', '')
+    
+    # Ensure the query is not empty or too short
+    if len(query) < 3:
+        return jsonify({'products': []})
+
+    # Use content-based filtering to get recommendations
+    recommended_products = content_based_recommendations(metadf, query, top_n=8)
+
+    # Extract 'large' images for each similar product
+    recommended_products['large_image_url'] = recommended_products['images'].apply(extract_large_image)
+
+    # Convert the recommended products to a list of dictionaries
+    product_list = recommended_products.to_dict(orient='records')
+
+    return jsonify({'products': product_list})
+
+
 if __name__ == '__main__':
     app.run(debug=True)

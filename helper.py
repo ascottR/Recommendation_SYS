@@ -145,45 +145,29 @@ def find_similar_products_by_id(product_id, X, item_mapper, item_inv_mapper, k, 
 
     return neighbour_ids
     
-def content_based_recommendations(metadf, item_title, top_n=10, chunk_size=1000):
-    # Check if the item title exists in the metadata
-    if item_title not in metadf['title'].values:
-        print(f"Item '{item_title}' not found in the dataset.")
+def content_based_recommendations(metadf, query, top_n=8, chunk_size=1000):
+    # Filter products with titles that contain the query (case-insensitive)
+    matching_products = metadf[metadf['title'].str.contains(query, case=False)]
+
+    if matching_products.empty:
+        print(f"No matching products found for query: '{query}'")
         return pd.DataFrame()
 
     # Create a TF-IDF vectorizer for the 'description' column
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
 
     # Apply TF-IDF vectorization to the descriptions
-    tfidf_matrix = tfidf_vectorizer.fit_transform(metadf['description'].fillna(''))
+    tfidf_matrix = tfidf_vectorizer.fit_transform(matching_products['description'].fillna(''))
 
-    # Get the index of the item based on its title
-    item_index = metadf[metadf['title'] == item_title].index[0]
+    # Compute cosine similarity between all products and the first matching product
+    cosine_sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix).flatten()
 
-    # Initialize an empty list to store similarities
-    all_similar_items = []
-
-    # Process the similarity matrix in chunks to avoid memory issues
-    n_items = tfidf_matrix.shape[0]
-    
-    for start_idx in range(0, n_items, chunk_size):
-        end_idx = min(start_idx + chunk_size, n_items)
-        cosine_sim_chunk = cosine_similarity(tfidf_matrix[start_idx:end_idx], tfidf_matrix[item_index])
-        
-        # Store the similarity values and their respective indices
-        chunk_similar_items = [(i + start_idx, sim[0]) for i, sim in enumerate(cosine_sim_chunk)]
-        all_similar_items.extend(chunk_similar_items)
-
-    # Sort similar items by similarity score (descending order)
-    all_similar_items = sorted(all_similar_items, key=lambda x: x[1], reverse=True)
-
-    # Get the top N most similar items (excluding the item itself)
-    top_similar_items = [item for item in all_similar_items if item[0] != item_index][:top_n]
-
-    # Extract the indices of the top similar items
-    recommended_item_indices = [x[0] for x in top_similar_items]
+    # Get the top N most similar items (excluding the query item itself)
+    similar_indices = cosine_sim.argsort()[-top_n-1:-1][::-1]
 
     # Get the details of the recommended items
-    recommended_items_details = metadf.iloc[recommended_item_indices][['title', 'average_rating', 'rating_number', 'images', 'price', 'store']]
+    recommended_items = matching_products.iloc[similar_indices][
+        ['title', 'average_rating', 'rating_number', 'images', 'price', 'store', 'parent_asin']
+    ]
 
-    return recommended_items_details
+    return recommended_items
