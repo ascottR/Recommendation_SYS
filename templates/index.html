@@ -50,7 +50,11 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="main" id="browseLink">
+            <i class="fas fa-th-large"></i> Browse Items
+          </a>
+        </li>
         <li class="nav-item"><a class="nav-link btn btn-outline-light mr-2" href="#" data-toggle="modal"
             data-target="#signupModal">Sign Up</a></li>
         <li class="nav-item"><a class="nav-link btn btn-warning text-dark" href="#" data-toggle="modal"
@@ -70,7 +74,6 @@
   <div class="container">
     <h2>Trending Products</h2>
     <div class="form-group">
-      <label for="categorySelect">Select Category:</label>
       <select id="categorySelect" class="form-control">
         <option value="">Select a category</option>
         {% for category in categories %}
