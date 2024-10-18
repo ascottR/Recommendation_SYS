@@ -8,6 +8,28 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="../static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <style>
+        .no-products-found {
+            text-align: center;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .no-products-found .lead {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .no-products-found i {
+            color: #007bff;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,16 +67,11 @@
                         onclick="searchProducts(searchInput.value)">Search</button>
                 </div>
             </div>
-            <div id="suggestionBox" class="suggestion-box mt-2"></div>
         </form>
     </div>
 
-    <!-- Message -->
-    {% if message %}
-    <div class="container text-center mt-4">
-        <h5 class="alert alert-warning">{{ message }}</h5>
-    </div>
-    {% endif %}
+    <!-- Suggestion / No Products Found Message -->
+    <div class="container mt-3" id="suggestionBox"></div>
 
     <!-- Recommended Products -->
     <div id="recommendationSection" class="container mt-5" style="display: none;">
@@ -64,19 +81,20 @@
 
     <script>
         function searchProducts(query) {
+            const suggestionBox = document.getElementById('suggestionBox');
+            const productList = document.getElementById('productList');
+            const recommendationTitle = document.getElementById('recommendationTitle');
+            const recommendationSection = document.getElementById('recommendationSection');
+
             if (query.length < 3) {
-                document.getElementById('suggestionBox').innerHTML = ''; // Clear if query is too short
-                document.getElementById('recommendationSection').style.display = 'none';
+                suggestionBox.innerHTML = ''; // Clear if query is too short
+                recommendationSection.style.display = 'none';
                 return;
             }
 
             fetch(`/live_search?query=${query}`)
                 .then(response => response.json())
                 .then(data => {
-                    const suggestionBox = document.getElementById('suggestionBox');
-                    const productList = document.getElementById('productList');
-                    const recommendationTitle = document.getElementById('recommendationTitle');
-
                     productList.innerHTML = ''; // Clear previous results
 
                     if (data.products.length > 0) {
@@ -85,23 +103,30 @@
 
                         data.products.forEach(product => {
                             const productHTML = `
-                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                            <div class="card">
-                                <img src="${product.large_image_url}" class="card-img-top" alt="${product.title}">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">${product.title.slice(0, 12)}</h5>
-                                    <p class="card-text">Brand: ${product.store}</p>
-                                    <a href="/product/${product.parent_asin}" class="btn btn-primary btn-block">Buy Now</a>
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div class="card">
+                                    <img src="${product.large_image_url}" class="card-img-top" alt="${product.title}">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">${product.title.slice(0, 12)}</h5>
+                                        <p class="card-text">Brand: ${product.store}</p>
+                                        <a href="/product/${product.parent_asin}" class="btn btn-primary btn-block">Buy Now</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>`;
+                            </div>`;
                             productList.insertAdjacentHTML('beforeend', productHTML);
                         });
 
-                        document.getElementById('recommendationSection').style.display = 'block';
+                        recommendationSection.style.display = 'block';
+                        suggestionBox.innerHTML = ''; // Clear the message
                     } else {
-                        suggestionBox.innerHTML = '<p class="text-center">No products found.</p>';
-                        document.getElementById('recommendationSection').style.display = 'none';
+                        // Display styled "No products found" message
+                        suggestionBox.innerHTML = `
+                        <div class="no-products-found mt-4">
+                            <i class="fas fa-search-minus fa-3x mb-3"></i>
+                            <p class="lead">Sorry, no products found for "<strong>${query}</strong>".</p>
+                            <p>Try searching with a different keyword.</p>
+                        </div>`;
+                        recommendationSection.style.display = 'none';
                     }
                 })
                 .catch(error => console.error('Error fetching products:', error));
