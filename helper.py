@@ -171,3 +171,4 @@ def content_based_recommendations(metadf, query, top_n=8, chunk_size=1000):
     ]
 
     return recommended_items
+
